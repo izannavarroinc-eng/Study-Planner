@@ -4,7 +4,7 @@ import { useTranslation } from "@/lib/store";
 import { useSubject, useTasks, useResources, useCreateTask, useUpdateTask, useDeleteTask, useCreateResource, useDeleteResource, useUpdateSubject } from "@/hooks/use-local-data";
 import { useGenerateQuiz } from "@/hooks/use-quiz-api";
 import { Card, Button, Input, Label, ProgressBar, Modal, cn } from "@/components/ui/shared";
-import { ArrowLeft, Trash2, CheckCircle2, Circle, Link as LinkIcon, Plus, BrainCircuit, AlertCircle } from "lucide-react";
+import { ArrowLeft, ArrowRight, Trash2, CheckCircle2, Circle, Link as LinkIcon, Plus, BrainCircuit, AlertCircle, Target, Calendar } from "lucide-react";
 import { Link } from "wouter";
 import { GenerateQuizRequest } from "@shared/schema";
 
