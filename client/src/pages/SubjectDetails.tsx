@@ -94,7 +94,7 @@ export default function SubjectDetails() {
     if (!tNew) return;
 
     const exists = topicsList.some(
-      (t) => t.toLowerCase() === tNew.toLowerCase(),
+      (t) => t.toLowerCase() === tNew.toLowerCase()
     );
     if (exists) {
       setNewTopic("");
@@ -108,7 +108,9 @@ export default function SubjectDetails() {
 
   // ✅ NEW: borrar topic
   const handleRemoveTopic = (topicToRemove: string) => {
-    const updated = topicsList.filter((t) => t !== topicToRemove).join(", ");
+    const updated = topicsList
+      .filter((t) => t !== topicToRemove)
+      .join(", ");
     updateSubject.mutate({ id, topics: updated });
   };
 
@@ -127,7 +129,7 @@ export default function SubjectDetails() {
           setTaskForm({ title: "", dueDate: "" });
           updateProgress();
         },
-      },
+      }
     );
   };
 
@@ -136,7 +138,7 @@ export default function SubjectDetails() {
       { id: taskId, completed: !currentStatus },
       {
         onSuccess: () => updateProgress(),
-      },
+      }
     );
   };
 
@@ -149,7 +151,7 @@ export default function SubjectDetails() {
           setIsResModalOpen(false);
           setResForm({ title: "", link: "", notes: "" });
         },
-      },
+      }
     );
   };
 
@@ -176,7 +178,7 @@ export default function SubjectDetails() {
         onSuccess: (data) => {
           setActiveQuiz(data);
         },
-      },
+      }
     );
   };
 
@@ -246,7 +248,7 @@ export default function SubjectDetails() {
               "px-6 py-2.5 rounded-xl font-semibold text-sm transition-all whitespace-nowrap",
               activeTab === tab.id
                 ? "bg-white dark:bg-slate-800 text-foreground shadow-sm"
-                : "text-muted-foreground hover:text-foreground hover:bg-secondary",
+                : "text-muted-foreground hover:text-foreground hover:bg-secondary"
             )}
           >
             {tab.label}
@@ -324,9 +326,7 @@ export default function SubjectDetails() {
                     key={task.id}
                     className="flex items-center gap-3 p-3 rounded-xl bg-card border border-border hover:border-primary/30 transition-colors"
                   >
-                    <button
-                      onClick={() => handleTaskToggle(task.id, task.completed)}
-                    >
+                    <button onClick={() => handleTaskToggle(task.id, task.completed)}>
                       {task.completed ? (
                         <CheckCircle2 className="w-6 h-6 text-primary" />
                       ) : (
@@ -336,7 +336,7 @@ export default function SubjectDetails() {
                     <span
                       className={cn(
                         "font-medium",
-                        task.completed && "line-through text-muted-foreground",
+                        task.completed && "line-through text-muted-foreground"
                       )}
                     >
                       {task.title}
@@ -388,8 +388,7 @@ export default function SubjectDetails() {
                       <p
                         className={cn(
                           "font-semibold text-lg",
-                          task.completed &&
-                            "line-through text-muted-foreground",
+                          task.completed && "line-through text-muted-foreground"
                         )}
                       >
                         {task.title}
@@ -417,9 +416,7 @@ export default function SubjectDetails() {
         {activeTab === "resources" && (
           <Card>
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold font-display">
-                {t("resources")}
-              </h2>
+              <h2 className="text-xl font-bold font-display">{t("resources")}</h2>
               <Button onClick={() => setIsResModalOpen(true)}>
                 <Plus className="w-4 h-4" /> Add
               </Button>
@@ -495,10 +492,7 @@ export default function SubjectDetails() {
                       className="flex h-12 w-full rounded-xl border-2 border-border bg-background px-4 py-2 font-medium"
                       value={quizSettings.topic}
                       onChange={(e) =>
-                        setQuizSettings({
-                          ...quizSettings,
-                          topic: e.target.value,
-                        })
+                        setQuizSettings({ ...quizSettings, topic: e.target.value })
                       }
                     >
                       <option value="">Select a topic...</option>
@@ -540,9 +534,7 @@ export default function SubjectDetails() {
                           })
                         }
                       >
-                        <option value="multiple_choice">
-                          {t("multipleChoice")}
-                        </option>
+                        <option value="multiple_choice">{t("multipleChoice")}</option>
                         <option value="true_false">{t("trueFalse")}</option>
                       </select>
                     </div>
@@ -560,9 +552,7 @@ export default function SubjectDetails() {
             ) : (
               <div className="max-w-3xl mx-auto">
                 <div className="flex justify-between items-center mb-8">
-                  <h3 className="text-2xl font-bold font-display">
-                    Quiz Time!
-                  </h3>
+                  <h3 className="text-2xl font-bold font-display">Quiz Time!</h3>
                   <Button variant="outline" onClick={() => setActiveQuiz(null)}>
                     Cancel
                   </Button>
@@ -589,9 +579,7 @@ export default function SubjectDetails() {
                       </div>
                     </div>
                   ))}
-                  <Button className="w-full h-14 text-lg">
-                    {t("submitQuiz")}
-                  </Button>
+                  <Button className="w-full h-14 text-lg">{t("submitQuiz")}</Button>
                 </div>
               </div>
             )}
@@ -611,9 +599,7 @@ export default function SubjectDetails() {
             <Input
               required
               value={taskForm.title}
-              onChange={(e) =>
-                setTaskForm({ ...taskForm, title: e.target.value })
-              }
+              onChange={(e) => setTaskForm({ ...taskForm, title: e.target.value })}
             />
           </div>
           <div>
@@ -621,9 +607,7 @@ export default function SubjectDetails() {
             <Input
               type="date"
               value={taskForm.dueDate}
-              onChange={(e) =>
-                setTaskForm({ ...taskForm, dueDate: e.target.value })
-              }
+              onChange={(e) => setTaskForm({ ...taskForm, dueDate: e.target.value })}
             />
           </div>
           <div className="flex justify-end gap-3 pt-4">
@@ -650,9 +634,7 @@ export default function SubjectDetails() {
             <Input
               required
               value={resForm.title}
-              onChange={(e) =>
-                setResForm({ ...resForm, title: e.target.value })
-              }
+              onChange={(e) => setResForm({ ...resForm, title: e.target.value })}
             />
           </div>
           <div>
@@ -668,9 +650,7 @@ export default function SubjectDetails() {
             <Label>Notes (Optional)</Label>
             <Input
               value={resForm.notes}
-              onChange={(e) =>
-                setResForm({ ...resForm, notes: e.target.value })
-              }
+              onChange={(e) => setResForm({ ...resForm, notes: e.target.value })}
             />
           </div>
           <div className="flex justify-end gap-3 pt-4">
