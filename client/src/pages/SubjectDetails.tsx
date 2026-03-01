@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { useRoute } from "wouter";
 import { useTranslation } from "@/lib/store";
 import {
@@ -37,6 +37,7 @@ import {
 } from "lucide-react";
 import { Link } from "wouter";
 import { GenerateQuizRequest } from "@shared/schema";
+import GoogleCalendarConnect from "@/GoogleCalendarConnect";
 
 export default function SubjectDetails() {
   const [, params] = useRoute("/subjects/:id");
@@ -108,13 +109,11 @@ export default function SubjectDetails() {
 
   // ✅ NEW: borrar topic
   const handleRemoveTopic = (topicToRemove: string) => {
-    const updated = topicsList
-      .filter((t) => t !== topicToRemove)
-      .join(", ");
+    const updated = topicsList.filter((t) => t !== topicToRemove).join(", ");
     updateSubject.mutate({ id, topics: updated });
   };
 
-  const handleTaskSubmit = (e: React.FormEvent) => {
+  const handleTaskSubmit = (e: FormEvent) => {
     e.preventDefault();
     createTask.mutate(
       {
@@ -142,7 +141,7 @@ export default function SubjectDetails() {
     );
   };
 
-  const handleResSubmit = (e: React.FormEvent) => {
+  const handleResSubmit = (e: FormEvent) => {
     e.preventDefault();
     createResource.mutate(
       { subjectId: id, ...resForm },
@@ -156,10 +155,9 @@ export default function SubjectDetails() {
   };
 
   const updateProgress = () => {
-    // Need to wait slightly for query cache to update, or compute manually
     setTimeout(() => {
-      const allT = tasks; // In real app, re-fetch or use state
-      // For simplicity, progress is just a manual setting here, but let's derive it.
+      const allT = tasks;
+      void allT;
     }, 100);
   };
 
@@ -259,12 +257,22 @@ export default function SubjectDetails() {
       <div className="mt-8">
         {activeTab === "overview" && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* ✅ NUEVO: Google Calendar connect (así el import NO da error y el botón se ve) */}
+            <Card>
+              <h2 className="text-xl font-bold font-display mb-2">
+                Google Calendar
+              </h2>
+              <p className="text-sm text-muted-foreground mb-4">
+                Connect your Google account to create events from Study Planner.
+              </p>
+              <GoogleCalendarConnect />
+            </Card>
+
             <Card>
               <h2 className="text-xl font-bold font-display mb-4">
                 {t("topics")}
               </h2>
 
-              {/* ✅ NEW UI: input + add */}
               <div className="flex gap-2 mb-4">
                 <Input
                   value={newTopic}
@@ -326,7 +334,9 @@ export default function SubjectDetails() {
                     key={task.id}
                     className="flex items-center gap-3 p-3 rounded-xl bg-card border border-border hover:border-primary/30 transition-colors"
                   >
-                    <button onClick={() => handleTaskToggle(task.id, task.completed)}>
+                    <button
+                      onClick={() => handleTaskToggle(task.id, task.completed)}
+                    >
                       {task.completed ? (
                         <CheckCircle2 className="w-6 h-6 text-primary" />
                       ) : (
@@ -416,7 +426,9 @@ export default function SubjectDetails() {
         {activeTab === "resources" && (
           <Card>
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold font-display">{t("resources")}</h2>
+              <h2 className="text-xl font-bold font-display">
+                {t("resources")}
+              </h2>
               <Button onClick={() => setIsResModalOpen(true)}>
                 <Plus className="w-4 h-4" /> Add
               </Button>
@@ -492,7 +504,10 @@ export default function SubjectDetails() {
                       className="flex h-12 w-full rounded-xl border-2 border-border bg-background px-4 py-2 font-medium"
                       value={quizSettings.topic}
                       onChange={(e) =>
-                        setQuizSettings({ ...quizSettings, topic: e.target.value })
+                        setQuizSettings({
+                          ...quizSettings,
+                          topic: e.target.value,
+                        })
                       }
                     >
                       <option value="">Select a topic...</option>
@@ -534,7 +549,9 @@ export default function SubjectDetails() {
                           })
                         }
                       >
-                        <option value="multiple_choice">{t("multipleChoice")}</option>
+                        <option value="multiple_choice">
+                          {t("multipleChoice")}
+                        </option>
                         <option value="true_false">{t("trueFalse")}</option>
                       </select>
                     </div>
@@ -579,7 +596,9 @@ export default function SubjectDetails() {
                       </div>
                     </div>
                   ))}
-                  <Button className="w-full h-14 text-lg">{t("submitQuiz")}</Button>
+                  <Button className="w-full h-14 text-lg">
+                    {t("submitQuiz")}
+                  </Button>
                 </div>
               </div>
             )}
@@ -599,7 +618,9 @@ export default function SubjectDetails() {
             <Input
               required
               value={taskForm.title}
-              onChange={(e) => setTaskForm({ ...taskForm, title: e.target.value })}
+              onChange={(e) =>
+                setTaskForm({ ...taskForm, title: e.target.value })
+              }
             />
           </div>
           <div>
@@ -607,7 +628,9 @@ export default function SubjectDetails() {
             <Input
               type="date"
               value={taskForm.dueDate}
-              onChange={(e) => setTaskForm({ ...taskForm, dueDate: e.target.value })}
+              onChange={(e) =>
+                setTaskForm({ ...taskForm, dueDate: e.target.value })
+              }
             />
           </div>
           <div className="flex justify-end gap-3 pt-4">
@@ -634,7 +657,9 @@ export default function SubjectDetails() {
             <Input
               required
               value={resForm.title}
-              onChange={(e) => setResForm({ ...resForm, title: e.target.value })}
+              onChange={(e) =>
+                setResForm({ ...resForm, title: e.target.value })
+              }
             />
           </div>
           <div>
@@ -650,7 +675,9 @@ export default function SubjectDetails() {
             <Label>Notes (Optional)</Label>
             <Input
               value={resForm.notes}
-              onChange={(e) => setResForm({ ...resForm, notes: e.target.value })}
+              onChange={(e) =>
+                setResForm({ ...resForm, notes: e.target.value })
+              }
             />
           </div>
           <div className="flex justify-end gap-3 pt-4">
