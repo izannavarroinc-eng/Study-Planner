@@ -1,6 +1,7 @@
 import { useAppStore, useTranslation } from "@/lib/store";
 import { Card, Button } from "@/components/ui/shared";
-import { Moon, Sun, Languages } from "lucide-react";
+import { Moon, Sun, Languages, Calendar } from "lucide-react";
+import GoogleCalendarConnect from "../GoogleCalendarConnect";
 
 export default function Settings() {
   const { t } = useTranslation();
@@ -14,20 +15,21 @@ export default function Settings() {
       </div>
 
       <Card className="space-y-8">
+        {/* Language */}
         <div>
           <h3 className="text-lg font-bold font-display flex items-center gap-2 mb-4">
             <Languages className="w-5 h-5 text-primary" /> {t('language')}
           </h3>
           <div className="flex gap-4">
-            <Button 
-              variant={lang === 'en' ? 'primary' : 'outline'} 
+            <Button
+              variant={lang === 'en' ? 'primary' : 'outline'}
               onClick={() => setLang('en')}
               className="w-32"
             >
               English
             </Button>
-            <Button 
-              variant={lang === 'es' ? 'primary' : 'outline'} 
+            <Button
+              variant={lang === 'es' ? 'primary' : 'outline'}
               onClick={() => setLang('es')}
               className="w-32"
             >
@@ -38,21 +40,24 @@ export default function Settings() {
 
         <div className="h-px bg-border w-full" />
 
+        {/* Theme */}
         <div>
           <h3 className="text-lg font-bold font-display flex items-center gap-2 mb-4">
-            {theme === 'dark' ? <Moon className="w-5 h-5 text-primary" /> : <Sun className="w-5 h-5 text-primary" />} 
+            {theme === 'dark'
+              ? <Moon className="w-5 h-5 text-primary" />
+              : <Sun className="w-5 h-5 text-primary" />}
             {t('theme')}
           </h3>
           <div className="flex gap-4">
-            <Button 
-              variant={theme === 'light' ? 'primary' : 'outline'} 
+            <Button
+              variant={theme === 'light' ? 'primary' : 'outline'}
               onClick={() => setTheme('light')}
               className="w-40"
             >
               <Sun className="w-4 h-4 mr-1" /> {t('lightMode')}
             </Button>
-            <Button 
-              variant={theme === 'dark' ? 'primary' : 'outline'} 
+            <Button
+              variant={theme === 'dark' ? 'primary' : 'outline'}
               onClick={() => setTheme('dark')}
               className="w-40"
             >
@@ -60,20 +65,41 @@ export default function Settings() {
             </Button>
           </div>
         </div>
-        
+
         <div className="h-px bg-border w-full" />
-        
+
+        {/* Google Calendar — single global connection */}
         <div>
-           <h3 className="text-lg font-bold font-display mb-4 text-destructive">Danger Zone</h3>
-           <p className="text-sm text-muted-foreground mb-4">This will clear all your local storage data. This action cannot be undone.</p>
-           <Button variant="destructive" onClick={() => {
-             if(confirm("Are you sure? All data will be lost.")) {
-               localStorage.clear();
-               window.location.reload();
-             }
-           }}>Clear All Data</Button>
+          <h3 className="text-lg font-bold font-display flex items-center gap-2 mb-2">
+            <Calendar className="w-5 h-5 text-primary" /> Google Calendar
+          </h3>
+          <p className="text-sm text-muted-foreground mb-4">
+            Connect once to create calendar events for any task across all subjects.
+            Your connection is shared throughout the entire app.
+          </p>
+          <GoogleCalendarConnect />
         </div>
 
+        <div className="h-px bg-border w-full" />
+
+        {/* Danger Zone */}
+        <div>
+          <h3 className="text-lg font-bold font-display mb-4 text-destructive">Danger Zone</h3>
+          <p className="text-sm text-muted-foreground mb-4">
+            This will clear all your local storage data. This action cannot be undone.
+          </p>
+          <Button
+            variant="destructive"
+            onClick={() => {
+              if (confirm("Are you sure? All data will be lost.")) {
+                localStorage.clear();
+                window.location.reload();
+              }
+            }}
+          >
+            Clear All Data
+          </Button>
+        </div>
       </Card>
     </div>
   );

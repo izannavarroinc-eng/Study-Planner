@@ -1,0 +1,47 @@
+I want to refactor my Study Planner app so Google Calendar connection is GLOBAL for the whole app, not per subject.
+
+Current situation:
+- I have a `GoogleCalendarConnect.tsx` component rendered inside `SubjectDetails.tsx`
+- This makes the "Connect Google Calendar" button appear inside each subject page
+- I do NOT want that anymore
+
+What I want:
+1. Remove the Google Calendar connect button from every subject page
+2. Add a SINGLE global Google Calendar connection in the app
+3. The user should connect Google Calendar only once
+4. After connecting once, all subjects/tasks should be able to use that same connection
+5. The connection UI should be placed outside individual subject views
+6. It should not appear in each subject card/page anymore
+
+Implementation requirements:
+- Keep React + TypeScript + Vite structure
+- Do not break existing subject/task/resource/topic logic
+- Move Google Calendar auth state to a global/shared place
+- Best approach is either:
+  - React Context, or
+  - a custom global hook/store
+- Expose globally:
+  - accessToken
+  - connection status
+  - connectGoogleCalendar()
+  - createCalendarEvent()
+
+Refactor goals:
+1. Create a global Google Calendar provider or shared hook
+2. Move all OAuth logic from `GoogleCalendarConnect.tsx` into that shared global logic
+3. Remove `<GoogleCalendarConnect />` from `SubjectDetails.tsx`
+4. Add a single global button in a better place, such as:
+   - Dashboard page
+   - Settings page
+   - top app header
+   Choose the cleanest location
+5. Make sure the app can later create events for tasks from any subject using the same connected account
+
+UI requirement:
+- Do NOT show the Google Calendar connect box inside each subject page anymore
+- Keep the UI clean and consistent with the current design
+
+Please do the refactor and explain:
+- which files you changed
+- where the new global connection button is placed
+- how other parts of the app can now use the shared Google Calendar connection

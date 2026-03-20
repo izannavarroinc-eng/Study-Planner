@@ -37,7 +37,6 @@ import {
 } from "lucide-react";
 import { Link } from "wouter";
 import { GenerateQuizRequest } from "@shared/schema";
-import GoogleCalendarConnect from "../GoogleCalendarConnect";
 
 export default function SubjectDetails() {
   const [, params] = useRoute("/subjects/:id");
@@ -257,16 +256,6 @@ export default function SubjectDetails() {
       <div className="mt-8">
         {activeTab === "overview" && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* ✅ NUEVO: Google Calendar connect (así el import NO da error y el botón se ve) */}
-            <Card>
-              <h2 className="text-xl font-bold font-display mb-2">
-                Google Calendar
-              </h2>
-              <p className="text-sm text-muted-foreground mb-4">
-                Connect your Google account to create events from Study Planner.
-              </p>
-              <GoogleCalendarConnect />
-            </Card>
 
             <Card>
               <h2 className="text-xl font-bold font-display mb-4">
