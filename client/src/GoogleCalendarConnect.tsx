@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useGoogleCalendarStore } from "@/lib/googleCalendarStore";
 import { Button } from "@/components/ui/shared";
 import {
@@ -10,6 +11,24 @@ import {
 
 export default function GoogleCalendarConnect() {
   const { status, errorMsg, connect, disconnect } = useGoogleCalendarStore();
+
+  // --- TEMPORARY DEBUG LOGS (safe to remove once verified) ---
+  useEffect(() => {
+    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID ?? "";
+    const origin = window.location.origin;
+    const gsiReady = Boolean(window.google?.accounts?.oauth2);
+
+    console.group("%c[Google Calendar Debug]", "color: #4285F4; font-weight: bold;");
+    console.log("Client ID (exact):", clientId || "⚠️ EMPTY — secret not exposed to client");
+    console.log("window.location.origin:", origin);
+    console.log("Running on Replit deployed domain?", origin === "https://study-wise-central--izannavarroinc.replit.app");
+    console.log("GSI window.google.accounts.oauth2 ready:", gsiReady);
+    console.log("---");
+    console.log("✅ Add BOTH of these as Authorized JavaScript Origins in Google Cloud Console:");
+    console.log("   https://study-wise-central--izannavarroinc.replit.app");
+    console.log("   " + origin);
+    console.groupEnd();
+  }, []);
 
   return (
     <div className="space-y-4">
