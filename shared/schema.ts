@@ -18,6 +18,7 @@ export const taskSchema = z.object({
   title: z.string(),
   dueDate: z.string().optional(), // ISO date string
   completed: z.boolean().default(false),
+  syncedToCalendar: z.boolean().optional().default(false), // true once a GCal event has been created
 });
 export type Task = z.infer<typeof taskSchema>;
 

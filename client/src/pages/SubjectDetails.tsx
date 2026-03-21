@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { useRoute } from "wouter";
 import { useTranslation } from "@/lib/store";
+import { useGoogleCalendarStore } from "@/lib/googleCalendarStore";
 import {
   useSubject,
   useTasks,
@@ -46,6 +47,8 @@ export default function SubjectDetails() {
   const { data: subject } = useSubject(id);
   const { data: tasks = [] } = useTasks(id);
   const { data: resources = [] } = useResources(id);
+
+  const { status: gCalStatus, createCalendarEvent } = useGoogleCalendarStore();
 
   const updateSubject = useUpdateSubject();
   const createTask = useCreateTask();
@@ -120,12 +123,37 @@ export default function SubjectDetails() {
         title: taskForm.title,
         dueDate: taskForm.dueDate || undefined,
         completed: false,
+        syncedToCalendar: false,
       },
       {
-        onSuccess: () => {
+        onSuccess: (newTask) => {
+          // Close modal immediately — don't block on calendar sync
           setIsTaskModalOpen(false);
           setTaskForm({ title: "", dueDate: "" });
           updateProgress();
+
+          // Auto-sync to Google Calendar if connected and task has a due date
+          if (gCalStatus === "connected" && newTask.dueDate) {
+            const start = new Date(newTask.dueDate);
+            const end = new Date(start.getTime() + 60 * 60 * 1000); // +1 hour
+            createCalendarEvent({
+              title: "Study: " + newTask.title,
+              description: "Subject: " + (subject?.name ?? ""),
+              start,
+              end,
+            })
+              .then((result) => {
+                if (result?.htmlLink) {
+                  // Mark this task as synced to avoid duplicates
+                  updateTask.mutate({ id: newTask.id, syncedToCalendar: true });
+                  console.log("[GCal] Event created:", result.htmlLink);
+                }
+              })
+              .catch((err) => {
+                // Calendar failure never breaks task logic
+                console.error("[GCal] Failed to create event:", err);
+              });
+          }
         },
       }
     );
@@ -396,6 +424,11 @@ export default function SubjectDetails() {
                         <p className="text-sm text-muted-foreground flex items-center gap-1">
                           <Calendar className="w-3.5 h-3.5" />{" "}
                           {new Date(task.dueDate).toLocaleDateString()}
+                          {task.syncedToCalendar && (
+                            <span className="ml-1 inline-flex items-center gap-1 text-xs font-medium text-green-600 dark:text-green-400">
+                              · synced
+                            </span>
+                          )}
                         </p>
                       )}
                     </div>
