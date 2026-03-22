@@ -15,4 +15,10 @@ fetch('https://eoqgkbgslddtlvhunmsk.supabase.co/rest/v1/', {
   .then(r => console.log('Supabase reachability — Status:', r.status))
   .catch(e => console.log('Supabase reachability — Error:', e.message))
 
-export const supabase = createClient(supabaseUrl, supabaseKey)
+export const supabase = createClient(supabaseUrl, supabaseKey, {
+  auth: {
+    flowType: 'pkce',
+    detectSessionInUrl: true,
+    persistSession: true,
+  }
+})
