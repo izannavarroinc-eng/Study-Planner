@@ -7,7 +7,7 @@ console.log('Supabase URL:', supabaseUrl)
 console.log('Supabase Key:', supabaseKey ? 'loaded' : 'EMPTY')
 
 // Temporary reachability test
-fetch('https://eoqgkbgslddtlvhunmsk.supabase.co/rest/v1/', {
+fetch('https://eogqkbgslddtlvhunmsk.supabase.co/rest/v1/', {
   headers: {
     'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVvZ3FrYmdzbGRkdGx2aHVubXNrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMzcyMzQsImV4cCI6MjA4OTYxMzIzNH0.bH63tAMFLOXCJsgA5ccFzK2Kr87GbzPb9fXVIhS6T_0'
   }
