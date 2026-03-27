@@ -15,17 +15,16 @@ async function getUserId(): Promise<string> {
 
 // ---------------------------------------------------------------------------
 // Row mappers — Supabase snake_case → app camelCase types
-// Fields absent from Supabase (topics, progress, nextExamDate, syncedToCalendar)
-// receive safe defaults so the UI never crashes.
 // ---------------------------------------------------------------------------
 function mapSubject(row: any): Subject {
   return {
     id: row.id,
     name: row.name,
-    icon: row.color ?? "📚",   // Supabase stores as `color`
-    nextExamDate: undefined,
-    topics: "",
-    progress: 0,
+    icon: row.color ?? "📚",                        // `color` in Supabase
+    nextExamDate: row.next_exam_date ?? undefined,  // date → string | undefined
+    topics: (row.topics ?? []).join(", "),          // text[] → comma-string
+    progress: row.progress ?? 0,
+    syncedToCalendar: row.synced_to_calendar ?? false,
   };
 }
 
@@ -102,7 +101,17 @@ export function useCreateSubject() {
       const uid = await getUserId();
       const { data: created, error } = await supabase
         .from("subjects")
-        .insert({ user_id: uid, name: data.name, color: data.icon })
+        .insert({
+          user_id: uid,
+          name: data.name,
+          color: data.icon,
+          topics: data.topics
+            ? data.topics.split(",").map((t) => t.trim()).filter(Boolean)
+            : [],
+          progress: data.progress ?? 0,
+          next_exam_date: data.nextExamDate ?? null,
+          synced_to_calendar: data.syncedToCalendar ?? false,
+        })
         .select()
         .single();
       if (error) throw error;
@@ -118,10 +127,20 @@ export function useUpdateSubject() {
     mutationFn: async (data: Partial<Subject> & { id: string }) => {
       const uid = await getUserId();
 
-      // Only send columns that exist in Supabase
+      // Map all persisted Subject columns to Supabase names
       const patch: Record<string, unknown> = {};
       if (data.name !== undefined) patch.name = data.name;
       if (data.icon !== undefined) patch.color = data.icon;
+      if (data.topics !== undefined)
+        patch.topics = data.topics
+          .split(",")
+          .map((t) => t.trim())
+          .filter(Boolean);
+      if (data.progress !== undefined) patch.progress = data.progress;
+      if (data.nextExamDate !== undefined)
+        patch.next_exam_date = data.nextExamDate ?? null;
+      if (data.syncedToCalendar !== undefined)
+        patch.synced_to_calendar = data.syncedToCalendar;
 
       if (Object.keys(patch).length > 0) {
         const { error } = await supabase
@@ -135,8 +154,7 @@ export function useUpdateSubject() {
       return data;
     },
     onSuccess: (returned) => {
-      // Patch the cache immediately for ALL fields (including topics/progress
-      // that aren't in Supabase — they live in-session in the cache only)
+      // Patch cache immediately so the UI reflects changes without waiting for refetch
       const patch = returned;
       qc.setQueryData(["subjects", patch.id], (old: Subject | null | undefined) =>
         old ? { ...old, ...patch } : old

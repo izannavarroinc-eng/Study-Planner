@@ -8,7 +8,8 @@ export const subjectSchema = z.object({
   icon: z.string(),
   nextExamDate: z.string().optional(),
   topics: z.string(),
-  progress: z.number().default(0), // 0-100 checklist completion
+  progress: z.number().default(0),         // 0-100
+  syncedToCalendar: z.boolean().optional().default(false), // exam synced to GCal
 });
 export type Subject = z.infer<typeof subjectSchema>;
 
